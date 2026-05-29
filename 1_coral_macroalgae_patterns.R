@@ -29,8 +29,7 @@ library(multcomp)
 # -- Load Data ----------------------------------------------------------------------
 # ----------------------------------------------------------------------------------#
 
-
-cover<-read.csv("data/data_clean/plots_benthic_cover.csv", header=TRUE, stringsAsFactors = TRUE)
+cover<-read.csv("data/data/plots_benthic_cover.csv", header=TRUE, stringsAsFactors = TRUE)
 
 #reordering factor levels
 cover$Herb_Trt<-factor(cover$Herb_Trt, levels=c("Open", "3X3", "2X2", "1X1"))
@@ -115,7 +114,7 @@ car::Anova(macro_change_mod.1)
 
 
 # ----------------------------------------------------------------------------------#
-# ---------- plot rate of change  ------------------------------------
+# ---------- plot rate of change  --------------------------------------------------
 # ----------------------------------------------------------------------------------#
 
 coral_macro_combined_l<-coral_macro_combined_w %>% 
@@ -183,9 +182,6 @@ coral_macro_biplot<-ggplot(cover, aes(x=Sum_Coral, y=Sum_Macroalgae, color=Date,
 coral_macro_biplot
 #ggsave("figures/coral_macro_biplot.pdf", width=10, height=3.5, units="in")
 
-# cowplot::plot_grid(coral_macro_change_plot + theme(legend.justification = c(0,1)),
-#                    coral_macro_biplot + theme(legend.justification = c(0,1)), 
-#                    nrow=2, align = c("vh"), axis = "bt",labels = c("(a)","(b)"))
 
 # ----------------------------------------------------------------------------------#
 # ---------------- plots of timeseries of coral and macroalgae ----------------------
@@ -228,9 +224,7 @@ coral_algae_timeseries<-ggplot(cover_means, aes(x=Date, y=mean, group=Herb_Trt, 
   theme(panel.border =  element_rect(colour="black",size=0.75), axis.ticks=element_line(color="black"))+
   theme(aspect.ratio = 4/6)
 coral_algae_timeseries
-ggsave("figures/coral_algae_timeseries.pdf", width=10, height=3.5, units="in")
-
-
+#ggsave("figures/coral_algae_timeseries.pdf", width=10, height=3.5, units="in")
 
 
 # simple stats coral and macro abundance at start ------------------------------
