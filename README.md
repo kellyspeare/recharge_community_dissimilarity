@@ -8,6 +8,8 @@ conducted forereef of Mo’orea, French Polynesia.
 
 Author of data analysis and code: Kelly E. Speare
 
+[![DOI](https://zenodo.org/badge/946235736.svg)](https://doi.org/10.5281/zenodo.20452848)
+
 ### Contents 
 
 - `0_download_data.R` - downloads data from EDI data repository. creates necessary folders for data, model outputs, and figures
@@ -17,4 +19,4 @@ Author of data analysis and code: Kelly E. Speare
 - `4_fish_biomass.R` - evaluates the effects of the consumer exclusion treatment on the abundance of fishes
 - `5_nutrinet_enrichment.R` - evaluates the effects of nutrient enrichment on water column nutrients
 
-[![DOI](https://zenodo.org/badge/946235736.svg)](https://doi.org/10.5281/zenodo.20452848)
+
