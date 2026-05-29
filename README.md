@@ -1,6 +1,6 @@
 ## Reducing consumer pressure increases community dissimilarity leading to coral- or algal- dominance on a coral reef
 
-Speare et al. 2026, Ecology
+Analysis and data visualization in support of Speare et al. 2026, Ecology
 
 ### Description 
 This project analyzes data from a four-year consumer exclusion and nutrient enrichment experiment 
