@@ -16,3 +16,5 @@ Author of data analysis and code: Kelly E. Speare
 - `3_rank_abundance_shifts.R` - evaluates effects of consumers and nutrients on colonizable space and mean rank shifts
 - `4_fish_biomass.R` - evaluates the effects of the consumer exclusion treatment on the abundance of fishes
 - `5_nutrinet_enrichment.R` - evaluates the effects of nutrient enrichment on water column nutrients
+
+[![DOI](https://zenodo.org/badge/946235736.svg)](https://doi.org/10.5281/zenodo.20452848)
