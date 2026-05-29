@@ -26,8 +26,8 @@ library(forcats)
 library(car)
 library(DHARMa)
 
-# dataframe with all of the cover data
-cover<-read.csv("data/data_clean/plots_benthic_cover.csv", header=TRUE, stringsAsFactors = TRUE)
+# dataframe with the benthic cover data
+cover<-read.csv("data/plots_benthic_cover.csv", header=TRUE, stringsAsFactors = TRUE)
 
 #reordering factor levels
 cover$Herb_Trt<-factor(cover$Herb_Trt, levels=c("Open", "3X3", "2X2", "1X1"))
@@ -449,7 +449,9 @@ dist_nutrient_plot<-ggplot()+
   theme(aspect.ratio = 6/6)
 dist_nutrient_plot
 
-# Plot Figure 5  -------------------------------------------------------------------
+# ----------------------------------------------------------------------------------#
+# --------- Plot Figure 5  ---------------------------------------------------------
+# ----------------------------------------------------------------------------------#
 
 six_panel_plot<-cowplot::plot_grid(space_herb_plot, space_nutrient_plot, 
                                    mrs_herb_plot, mrs_nutrient_plot, 
@@ -460,7 +462,7 @@ six_panel_plot<-cowplot::plot_grid(space_herb_plot, space_nutrient_plot,
 six_panel_legend<-cowplot::plot_grid(space_herb_legend, space_nutrient_legend, align="vh", ncol=2)
 six_panel_plot_with_legend<-cowplot::plot_grid(six_panel_plot, six_panel_legend, align="vh", ncol=1, rel_heights = c(5, 0.5))
 six_panel_plot_with_legend
-ggsave("figures/six_panel_plot_with_legend_median_v2.pdf", width=7.2, height=10, units="in")
+#ggsave("figures/six_panel_plot_with_legend_median.pdf", width=7.2, height=10, units="in")
 
 
 # ----------------------------------------------------------------------------------#
@@ -478,7 +480,10 @@ ratio_sums_t12<-ddply(subset(ranks_plots, Timepoint=="T11"), .(Herb_Trt), summar
                       perc_coral=(sum(binary_coral)/length(binary_coral))*100,
                       perc_macro=(sum(binary_macro)/length(binary_macro))*100)
 
-# Plot Figure 6 -----------------------------------------------------------------------
+# ----------------------------------------------------------------------------------#
+# -------- Plot Figure 6 ------------------------------------------------------------
+# ----------------------------------------------------------------------------------#
+
 coral_macro_ratio_time<-ggplot(ranks_plots, aes(x=Date, y=log_ratio_coral_macro, group=Block_Plot_Herb_Trt, color=Herb_Trt, shape=Nutrient_Trt))+
   geom_hline(yintercept=0, linetype="dashed", color = "gray")+
   geom_point(aes(color=Herb_Trt), size=2, stroke = 1, alpha=0.8)+
@@ -498,6 +503,6 @@ coral_macro_ratio_time<-ggplot(ranks_plots, aes(x=Date, y=log_ratio_coral_macro,
   theme(panel.border =  element_rect(colour="black",size=0.75), axis.ticks=element_line(color="black"))+
   theme(aspect.ratio = 4/6)
 coral_macro_ratio_time
-ggsave("figures/coral_macro_ratio_time_v2.pdf", width=9, height=5, units="in")
+#ggsave("figures/coral_macro_ratio_time.pdf", width=9, height=5, units="in")
 
 
