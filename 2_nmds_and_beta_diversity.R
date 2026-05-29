@@ -7,7 +7,7 @@
 # ----------------------------------------------------------------------- #
 # this script makes nMDS plots, 
 # analyzes data on beta dispersion (i.e. beta diversity)
-# Plots Figures 2, 3
+# Plots Figures 3, 4
 
 # Packages --------------------------------------------------------------- #
 
@@ -32,7 +32,7 @@ library(multcomp)
 # -----------------------------------------------------------------------------#
 
 # load percent cover data
-cover<-read.csv("data/data_clean/plots_benthic_cover.csv", header=TRUE, stringsAsFactors = TRUE)
+cover<-read.csv("data/plots_benthic_cover.csv", header=TRUE, stringsAsFactors = TRUE)
 
 #reordering factor levels
 cover$Herb_Trt<-factor(cover$Herb_Trt, levels=c("Open", "3X3", "2X2", "1X1"))
@@ -56,7 +56,7 @@ fun_groups$functional_group<-factor(fun_groups$functional_group, c("branching co
                                                  "turf, bare space, encrusting algae", "anemones","sponges","tridacna","rubble","sand"))
 
 #load timepoints key
-timepoints<-read.csv("Time_point_key.csv", header = T, stringsAsFactors = T)
+timepoints<-read.csv("data/Time_point_key.csv", header = T, stringsAsFactors = T)
 timepoints$Date<-as.Date(timepoints$Date, "%m/%d/%Y")
 
 # setting the start date of the experiment
@@ -85,15 +85,15 @@ data_summary <- function(x) {
 
 ## NMDS T0 ---------------------------------------------------------------------
 
-# Make a matrix of any species functional group that is present
-
+# Make a species matrix dataframe
 sp_matrix0<-as.matrix(cover0[,c(13:56)])
+# Make metadata datafram
 meta0<-cover0[,c(1:12)]
 
 # NMDS 
 nmds0<-metaMDS(sp_matrix0, distance="bray", trymax=1000, k=2, autotransform =FALSE) 
 stressplot(nmds0)
-print(nmds0) #stress is 0.2  
+print(nmds0) #stress is 0.157 
 
 nmds0_df<-data.frame(MDS1=nmds0$points[,1], MDS2=nmds0$points[,2])
 nmds0_df_meta<-cbind(meta0, nmds0_df)
@@ -178,15 +178,15 @@ vector_legend <- get_legend(nmds_t0_vectors_legend + theme(legend.box.margin = m
 
 ## NMDS T12 --------------------------------------------------------------------
 
-#Make a matrix of any species functional group that is present
-
+#Make a species matrix dataframe
 sp_matrix12<-as.matrix(cover12[,c(13:56)])
+# Make a metadata dataframe
 meta12<-cover12[,c(1:12)]
 
 # NMDS 
 nmds12<-metaMDS(sp_matrix12, distance="bray", trymax=1000, k=2, autotransform =FALSE) 
 stressplot(nmds12)
-print(nmds12) #stress is 0.09  
+print(nmds12) #stress is 0.108  
 
 nmds12_df<-data.frame(MDS1=nmds12$points[,1], MDS2=nmds12$points[,2])
 nmds12_df_meta<-cbind(meta12, nmds12_df)
@@ -271,6 +271,7 @@ t0_dist_plot<-ggplot(betadisp0, aes(x=Herb_Trt, y=distances, color=Herb_Trt, sha
   theme(panel.border =  element_rect(colour="black",size=0.75), axis.ticks=element_line(color="black"))+
   theme(legend.position = "none")+
   theme(aspect.ratio = 4/4)
+t0_dist_plot
 
 ## Beta Dispersion T12 - herb trt, 4 groups  -----------------------------
 
@@ -305,6 +306,7 @@ t12_dist_plot<-ggplot(betadisp12, aes(x=Herb_Trt, y=distances, color=Herb_Trt, s
   theme(panel.border =  element_rect(colour="black",size=0.75), axis.ticks=element_line(color="black"))+
   theme(legend.position = "none")+
   theme(aspect.ratio = 4/4)
+t12_dist_plot
 
 # -----------------------------------------------------------------------------#
 # Beta Dispersion - herb and nutrients, 8 groups -------------------------------
@@ -353,111 +355,62 @@ betadisp12_twofac_df$Herb_Trt<-factor(betadisp12_twofac_df$Herb_Trt, levels=c("O
 betadisp12_twofac_df$Timepoint<-"T12"
 
 
-# Plot Figure 2 ----------------------------------------------------------------
+# Plot Figure 3 ----------------------------------------------------------------
 
 nmds_distance_plot<-cowplot::plot_grid(nmds_t0_plot, nmds_t0_vectors, t0_dist_plot, nmds_t12_plot, nmds_t12_vectors, t12_dist_plot, 
                                        align = c("v","h"), labels = c("(a)","(b)","(c)","(d)","(e)","(f)"))
 legend<-cowplot::plot_grid(nmds_legend, vector_legend, ncol=1, nrow = 2,  align="vh")
 nmds_distance_plot_legend<-cowplot::plot_grid(nmds_distance_plot, legend, align="vh", rel_widths = c(5, 1))
 nmds_distance_plot_legend
-ggsave("figures/nmds_distance_plot_legend.pdf", width=11, height=6, units="in")
+#ggsave("figures/nmds_distance_plot_legend.pdf", width=11, height=6, units="in")
 
 
 # PERMANOVA -------------------------------------------------------------------
 # does community composition differ by treatment?
 
 ## PERMANOVA T0 ----------------------------------------------------------------
+
 ### Herbivory ------------------------------------------------------------------
-
 adonis2(sp_matrix0 ~ Herb_Trt, data=meta0, permutations = 999, method = "bray")
-#          Df SumOfSqs      R2      F Pr(>F)
-# Herb_Trt  3  0.02426 0.06443 0.6428  0.75
-# Residual 28  0.35231 0.93557              
-# Total    31  0.37658 1.00000   
-
-adonis2(sp_matrix0_twofac ~ Herb_Trt, data=meta0_twofac, permutations = 999, method = "bray")
-#           Df SumOfSqs      R2      F Pr(>F)
-# Herb_Trt  3  0.02426 0.06443 0.6428  0.767
-# Residual 28  0.35231 0.93557              
-# Total    31  0.37658 1.00000 
-# fyi running this with the two-factor data frame and the regular dataframe returns the same results. they should
 
 ### Nutrients ------------------------------------------------------------------
-
 adonis2(sp_matrix0 ~ Nutrient_Trt, data=meta0, permutations = 999, method = "bray")
-#               Df SumOfSqs      R2      F Pr(>F)
-# Nutrient_Trt  1  0.00048 0.00127 0.0382  0.956
-# Residual     30  0.37610 0.99873              
-# Total        31  0.37658 1.00000   
 
 ### two-factor Herbivory and Nutrients -----------------------------------------
 # these are the stats reported in the paper
 adonis2(sp_matrix0_twofac ~ Twofac, data=meta0_twofac, permutations = 999, method = "bray")
 adonis2(sp_matrix0 ~ Nutrient_Trt + Herb_Trt + Nutrient_Trt*Herb_Trt, data=meta0, permutations = 999, method = "bray", by = "terms")
-#                       Df SumOfSqs      R2      F Pr(>F)
-# Nutrient_Trt           1  0.00048 0.00127 0.0373  0.968
-# Herb_Trt               3  0.02426 0.06443 0.6299  0.783
-# Nutrient_Trt:Herb_Trt  3  0.04368 0.11600 1.1341  0.340
-# Residual              24  0.30815 0.81830              
-# Total                 31  0.37658 1.00000 
 
-#3 test of disprsions separately for two factors
+# test of dispersions separately for two factors
 #------- Herbivory treatment -----
 bray_mod0_herb<-betadisper(bray_dist0, meta0$Herb_Trt, type = "median")
 anova(bray_mod0_herb)
-#            Df  Sum Sq  Mean Sq F value    Pr(>F)    
-# Groups     3 0.005587 0.0018624  1.0759 0.3753
-# Residuals 28 0.048469 0.0017310     
 
 #------- Nutrient treatment -----
 bray_mod0_nutrients<-betadisper(bray_dist0, meta0$Nutrient_Trt, type = "median")
 anova(bray_mod0_nutrients)
-#            Df  Sum Sq   Mean Sq F value Pr(>F)
-# Groups     1 0.000709 0.00070948  0.4975  0.486
-# Residuals 30 0.042781 0.00142604
 
 ## PERMANOVA T12 ---------------------------------------------------------------
-### Herbivory ------------------------------------------------------------------
 
+### Herbivory ------------------------------------------------------------------
 adonis2(sp_matrix12 ~ Herb_Trt, data=meta12, permutations = 999, method = "bray", by = "terms")
-#           Df SumOfSqs     R2      F Pr(>F)    
-# Herb_Trt  3   1.4360 0.5096 9.6988  0.001 ***
-# Residual 28   1.3819 0.4904                  
-# Total    31   2.8179 1.0000  
 
 ### Nutrients ------------------------------------------------------------------
-
 adonis2(sp_matrix12 ~ Nutrient_Trt, data=meta12, permutations = 999, method = "bray", by = "terms")
-#               Df SumOfSqs      R2      F Pr(>F)
-# Nutrient_Trt  1  0.14536 0.05158 1.6317   0.17
-# Residual     30  2.67253 0.94842              
-# Total        31  2.81789 1.00000   
 
 ### two-factor Herbivory and Nutrients -----------------------------------------
 # these are the stats reported in the paper
 adonis2(sp_matrix12 ~ Nutrient_Trt + Herb_Trt + Nutrient_Trt*Herb_Trt, data=meta12, permutations = 999, method = "bray", by = "terms")
-#                        Df SumOfSqs      R2       F Pr(>F)    
-# Nutrient_Trt           1  0.14536 0.05158  3.2099  0.031 *  
-# Herb_Trt               3  1.43600 0.50960 10.5703  0.001 ***
-# Nutrient_Trt:Herb_Trt  3  0.14971 0.05313  1.1020  0.343    
-# Residual              24  1.08682 0.38569                   
-# Total                 31  2.81789 1.00000            
 
-#3 test of dispersions separately for two factors
+# test of dispersions separately for two factors
 #------- Herbivory treatment -----
 bray_mod12_herb<-betadisper(bray_dist12, meta12$Herb_Trt, type = "median")
 anova(bray_mod12_herb)
-#           Df  Sum Sq  Mean Sq F value    Pr(>F)    
-# Groups     3 0.081512 0.0271705  6.9913 0.001179 **
-# Residuals 28 0.108818 0.0038864   
 TukeyHSD(bray_mod12_herb)
 
 #------- Nutrient treatment -----
 bray_mod12_nutrients<-betadisper(bray_dist12, meta0$Nutrient_Trt, type = "median")
 anova(bray_mod12_nutrients)
-#            Df  Sum Sq   Mean Sq F value Pr(>F)
-# Groups     1 0.00005 0.0000454  0.0039 0.9506
-# Residuals 30 0.34907 0.0116356   
 
 #--------------------------- SIMPER T12 --------------------------
 #only doing for t12 because there were not significant differences at t0
@@ -616,7 +569,7 @@ tukey_12<-TukeyHSD(bray_mod12_twofac, "group")
 # interaction is not significant at any timpoint
 # therefore we can proceed to test for effects of herbivory and nutrients separately 
 
-#- pulling beta dispersion data for use in mixed effects models -----------------------
+## Pulling beta dispersion data for use in mixed effects models -----------------------
 
 # we calculated distances to median for 8 groups. groups represent a single  factor that combines herbivory and nutrients
 # since we want to test for the effects of nutrients and herbivory on betadiversity we will use those data 
@@ -688,7 +641,7 @@ betadisp_twofac_df$Herb_Trt<-factor(betadisp_twofac_df$Herb_Trt, levels=c("Open"
 #write.csv(betadisp_twofac_df, "data_summaries/betadisp_twofac_df.csv")
 
 
-#---------------------- summarizing the data for plotting  -----------------------
+##  summarizing the data for plotting  -----------------------------------------
 
 ## one factor - consumer pressure ----------------------------------------------
 # summarizing for Herbivory and Nutrient treatments
@@ -721,9 +674,8 @@ betadisp_df_twofac_sum$Twofac<-as.factor(paste(betadisp_df_twofac_sum$Herb_Trt, 
 
 # Mixed effects model ------------------------------------------------------------
 # evaluating effects of herbivory and nutrients on community dispersion 
-#  Block_Plot_Herb_Trt as a random effect
+# Block_Plot_Herb_Trt as a random effect to account for repeated measures through time
 # factors are Days_since_start, Herb_Trt, Nutrient_trt
-# included plot (Block_Plot_Herb_Trt) as a random effect to account for repeated measures through time.
 
 dist.mod.1<-lmer(distances ~ Herb_Trt + Nutrient_Trt + Days_since_start+Herb_Trt*Nutrient_Trt*Days_since_start  + (1|Block_Plot_Herb_Trt), data=betadisp_twofac_df)
 car::Anova(dist.mod.1) # no three-way interaction
@@ -732,7 +684,7 @@ dist.mod.2<-lmer(distances ~ Herb_Trt + Nutrient_Trt + Days_since_start + Herb_T
 summary(dist.mod.2)
 plot(allEffects(dist.mod.2))
 car::Anova(dist.mod.2) #Type II Wald chisquare tests
-# stats presented in the paper
+# these are the stats presented in the paper
 #                                 Chisq Df Pr(>Chisq)    
 # Herb_Trt                      28.6391  3  2.667e-06 ***
 # Nutrient_Trt                   0.0020  1    0.96414    
@@ -742,7 +694,7 @@ car::Anova(dist.mod.2) #Type II Wald chisquare tests
 # Nutrient_Trt:Days_since_start  4.9722  1    0.02576 * 
 
 
-plot(allEffects(dist.mod.2)) ## this is the plot you want for the supp!
+plot(allEffects(dist.mod.2)) 
 plot(simulateResiduals(fittedModel=dist.mod.2, quantileFunction = qnorm))
 
 qqnorm(ranef(dist.mod.2)[[1]][,1])
@@ -757,34 +709,7 @@ emtrends(dist.mod.2, pairwise ~ Nutrient_Trt, var = "Days_since_start")
 cld(emtrends(dist.mod.2, pairwise ~ Nutrient_Trt, var = "Days_since_start"))
 
 # getting the predicted relationships
-dist_ref<-ref_grid(dist.mod.2, at=list(Days_since_start=c(0,200,400, 600, 800, 1000, 1200, 1362, 1500)))
-dist_pred<-data.frame(emmip(dist_ref, Herb_Trt + Nutrient_Trt ~ Days_since_start, cov.reduce=range, plotit=FALSE)) #look at them visually
-
-# plotting the predicted relationships on top of the real data 
-betadisper_days_plot<-ggplot()+ 
-  geom_point(data=betadisp_twofac_df, aes(x=Days_since_start, y=distances, color=Herb_Trt, fill=Herb_Trt, shape=Nutrient_Trt),
-             position=position_jitter(w = 25), size=2, stroke = 1, alpha=0.5)+
-  geom_ribbon(data=dist_pred, aes(x=Days_since_start, ymin=yvar-SE, ymax=yvar+SE, fill=Herb_Trt, group=tvar),alpha= 0.3) +
-  geom_line(data=dist_pred, aes(x=Days_since_start, y = yvar, color=Herb_Trt, group=tvar, linetype=Nutrient_Trt), size = 0.9)+
-  scale_color_manual(values=c("#0d0887","#7e03a8",  "#cc4778", "#f89540"), 
-                     name = "Consumer pressure", labels = c("High","Medium", "Low", "Very low" ))+
-  scale_fill_manual(values=c("#0d0887","#7e03a8",  "#cc4778", "#f89540"), 
-                    name = "Consumer pressure", labels = c("High","Medium", "Low", "Very low" ))+
-  scale_shape_manual(values=c(1,2), name="Nutrients")+
-  scale_linetype_manual(values=c(1,2), name="Nutrients")+
-  coord_fixed()+
-  theme_bw()+
-  ylab("Beta dispersion")+
-  xlab("Days since start of experiment")+
-  labs(color="Herbivory")+
-  theme(axis.text=element_text(colour="black", size=12), axis.title = element_text(size=14))+
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
-  theme(panel.border =  element_rect(colour="black",size=0.75), axis.ticks=element_line(color="black"))+
-  theme(aspect.ratio = 4/6)
-betadisper_days_plot
-#ggsave("figures/betadisper_days_plot.pdf", width=7, height=4, units="in")
-
-# or plotting the effects of consumers and nutrients separately
+# plotting the effects of consumers and nutrients as separate plots
 
 # Herb_Trt
 dist_herb_ref<-ref_grid(dist.mod.2, at=list(Days_since_start=c(0,200,400, 600, 800, 1000, 1200, 1362, 1500)))
@@ -836,9 +761,10 @@ dist_nut_plot<-ggplot()+
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
   theme(panel.border =  element_rect(colour="black",size=0.75), axis.ticks=element_line(color="black"))+
   theme(aspect.ratio = 4/6)
+dist_nut_plot
 
-# Plot Figure 3 ----------------------------------------------------------------
+# Plot Figure 4 ----------------------------------------------------------------
 
 distance_fig<-cowplot::plot_grid(dist_herb_plot, dist_nut_plot, ncol=1, align="vh", labels=c("(a)","(b)"))
 distance_fig
-ggsave("figures/distance_fig_v2.pdf", width=5, height=6.3, units="in")
+#ggsave("figures/distance_fig.pdf", width=5, height=6.3, units="in")

@@ -13,9 +13,9 @@
 library(cowplot)
 library(ggplot2)
 library(vegan)
+library(tidyr)
 library(plyr)
 library(dplyr)
-library(tidyr)
 library(lme4)
 library(emmeans)
 library(tidyr)
@@ -29,7 +29,7 @@ library(multcomp)
 # -- Load Data ----------------------------------------------------------------------
 # ----------------------------------------------------------------------------------#
 
-cover<-read.csv("data/data/plots_benthic_cover.csv", header=TRUE, stringsAsFactors = TRUE)
+cover<-read.csv("data/plots_benthic_cover.csv", header=TRUE, stringsAsFactors = TRUE)
 
 #reordering factor levels
 cover$Herb_Trt<-factor(cover$Herb_Trt, levels=c("Open", "3X3", "2X2", "1X1"))
@@ -118,7 +118,7 @@ car::Anova(macro_change_mod.1)
 # ----------------------------------------------------------------------------------#
 
 coral_macro_combined_l<-coral_macro_combined_w %>% 
-  select(Block, Block_Plot_Herb_Trt, Herb_Trt, Nutrient_Trt, coral_change_rate, macro_change_rate) %>% 
+  dplyr::select(Block, Block_Plot_Herb_Trt, Herb_Trt, Nutrient_Trt, coral_change_rate, macro_change_rate) %>% 
   pivot_longer(cols=c(coral_change_rate, macro_change_rate), names_to="group", values_to = "change_rate")
 
 # data summary function that makes mean points for plots #
