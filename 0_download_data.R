@@ -16,6 +16,7 @@ library(tidyverse)
 # create folders for storing data, figures, and model outputs ------------------#
 
 dir.create("data")
+dir.create("data/data_summaries")
 dir.create("figures")
 dir.create("model outputs")
 dir.create("model outputs/adonis")

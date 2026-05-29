@@ -1,5 +1,4 @@
 # ----------------------------------------------------------------------- #
-
 # Reducing consumer pressure increases community dissimilarity leading to 
 # coral- or algal- dominance on a coral reef
 #  
@@ -20,7 +19,7 @@ library(glmmTMB)
 
 # data --------------------------------------------------------------------
 
-fish<-read.csv("data/data_clean/fish_biomass.csv", header=TRUE, stringsAsFactors = TRUE)
+fish<-read.csv("data/fish_biomass.csv", header=TRUE, stringsAsFactors = TRUE)
 
 #how many unique survey dates?
 unique(fish$monthyr) #8
@@ -205,7 +204,7 @@ ggsave("figures/herbivore_corallivore_species_plot.pdf", width=12, height=8.5, u
 # Bites on corals - a proxy for corallivory -------------------------------------- 
 
 # read data
-bites<-read.csv("data/data_clean/bites_on_corals.csv", header = TRUE, stringsAsFactors = TRUE)
+bites<-read.csv("data/bites_on_corals.csv", header = TRUE, stringsAsFactors = TRUE)
 
 bites_l<-pivot_longer(bites, cols=Bites_T10:Bites_T12, names_to = "Timepoints", values_to = "bites")
 

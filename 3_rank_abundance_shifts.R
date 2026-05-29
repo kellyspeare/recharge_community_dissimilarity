@@ -5,7 +5,10 @@
 # 3_rank_abundance_shifts
 
 # ----------------------------------------------------------------------- #
-# this script analyzes data on rank abundance shifts (mean rank shifts)
+# this script analyzes relationships between time and
+# the abundance of colonizable space, 
+# rank abundance shifts (mean rank shifts), and
+# beta dispersion
 # Plots Figures 5, 6
 
 # Packages --------------------------------------------------------------- #
